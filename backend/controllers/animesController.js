@@ -1,5 +1,10 @@
 const express = require("express");
 const animes = express.Router();
+
+// validation
+const { checkName, checkDescription } = require('../validations/checkAnime')
+
+
 const {
   getAllAnimes,
   getOneAnime,
@@ -24,6 +29,15 @@ const {
 //   }
 // ]
 
+animes.get('/', async (req, res) => {
+  try {
+    const allAnimes = await getAllAnimes()
+    res.status(200).json(allAnimes) 
+  } catch (error) {
+      res.status(500).json({ error: error })
+  }
+})
+
 //Write a POST route that takes user provided data from the request body and creates a new anime in the database. The route should respond with a 201 status code and the new anime.
 //if the request body does not contain a name and description, or if the body's name or description have no length, respond with an error
 //your response body should look this:
@@ -32,6 +46,16 @@ const {
 //   "name": "test",
 //   "description": "this is anime"
 // }
+
+animes.post('/', checkName, checkDescription, async (req, res) => {
+  const { name, description } = req.body
+  try {
+    const newAnime = await createOneAnime(name, description)
+    res.status(201).json(newAnime)
+  } catch (error) {
+      res.status(500).json({error: error})
+  }
+})
 
 //Write a PUT route that takes user provided data from the request body and updates an existing anime in the database. The route should respond with a 200 and the updated anime. The route should be able to handle a non-existent anime id.
 //if the request body does not contain a name and description, or if the body's name or description have no length, respond with an error
@@ -42,6 +66,21 @@ const {
 //   "description": "this is anime as well"
 // }
 
+animes.put('/:animeId', checkName, checkDescription, async (req, res) => {
+  const { animeId } = req.params
+  try {
+    const updatedAnime = await updateOneAnime(animeId, req.body)
+    if (!updatedAnime) {
+      res.status(404).json({error: `Anime with id ${animeId} does not exist`})
+    } else {
+      res.status(200).json(updatedAnime)
+    }
+    
+  } catch (error) {
+      res.status(500).json({ error: error})
+  }
+})
+
 //Write a DELETE route that deletes a single anime by id (provided by the client as a request param) from the database and responds with a 200 and the deleted anime data. The route should be able to handle a non-existent anime id.
 //your response body should look this:
 // {
@@ -49,4 +88,19 @@ const {
 //   "name": "test1",
 //   "description": "this is anime as well"
 // }
+
+animes.delete('/:animeId', async (req, res) => {
+  const { animeId } = req.params
+  try {
+    const deletedAnime = await deleteOneAnime(animeId)
+    if (!deletedAnime) {
+      res.status(404).json({ error: `Anime with id ${animeId} does not exist`})
+    } else {
+        res.status(200).json(deletedAnime)
+    }
+  } catch (error) {
+      console.log(error)
+      res.status(500).json({error: error})
+  }
+})
 module.exports = animes;

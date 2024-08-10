@@ -20,7 +20,7 @@ const createOneAnime = async (name, description) => {
 
 const updateOneAnime = async (id, body) => {
   const { name, description } = body;
-  const updatedAnime = await db.one(
+  const updatedAnime = await db.oneOrNone(
     "UPDATE animes SET name=$1, description=$2 WHERE id=$3 RETURNING *",
     [name, description, id]
   );
@@ -28,7 +28,7 @@ const updateOneAnime = async (id, body) => {
 };
 
 const deleteOneAnime = async (id) => {
-  const deletedAnime = await db.oneOrNone(
+  const deletedAnime = await db.one(
     "DELETE FROM animes WHERE id=$1 RETURNING *",
     id
   );

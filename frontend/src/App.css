@@ -17,6 +17,7 @@ body {
 .navbar section {
   border-bottom: solid rgb(173, 173, 173);
 }
+
 .navbar-sub-section {
   display: flex;
   flex-direction: row;
@@ -50,5 +51,17 @@ body {
   flex-direction: row;
 }
 
+.index {
+  border: 1px solid black;
+  width: 90%;
+  margin: 0px 0px 0px 20px;
+  background-color: #f8f4ec;
+  box-shadow:
+    -10px 10px 0px black,
+    -10px 10px 0px black
+}
 
-
+/* 
+Reference for box shadow:
+https://stackoverflow.com/questions/9256729/how-to-create-box-shadow-only-on-left-right-and-bottom 
+*/

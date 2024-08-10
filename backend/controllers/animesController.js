@@ -8,7 +8,7 @@ const {
   deleteOneAnime,
 } = require("../queries/animes");
 
-const {checkName, checkDescription} = require("../Validations/checkControllers")
+const {checkName, checkDescription } = require("../Validations/checkControllers")
 
 /* Instructions: Use the following prompts to write the corresponding routes. **Each** route should be able to catch server-side and user input errors(should they apply). Consult the test files to see how the routes and errors should work.*/
 //Write a GET route that retrieves all animes from the database and sends them to the client with a 200 status code
@@ -27,23 +27,29 @@ const {checkName, checkDescription} = require("../Validations/checkControllers")
 // ]
 
 animes.get("/", async (req, res) => {
-  const allAnimes = await getAllAnimes();
-
-  if(allAnimes){
-    res.status(200).json(allAnimes)
-  } else {
-    res.status(404).json({error: "not found"})
+  try{
+    const allAnimes = await getAllAnimes();
+    if(allAnimes){
+      res.status(200).json(allAnimes)
+    } else {
+      res.status(404).json({error: "not found"})
+    }
+  } catch (error) {
+    res.status(500).json({error: error})
   }
 })
 
 animes.get("/:animeId", async (req, res) => {
   const {animeId} = req.params;
   const oneAnime = await getOneAnime(animeId)
-
-  if(oneAnime){
-    res.status(200).json(oneAnime)
-  } else {
-    res.status(404).json({error: "anime not found"})
+  try {
+    if(oneAnime){
+      res.status(200).json(oneAnime)
+    } else {
+      res.status(404).json({error: "anime not found"})
+    }
+  } catch (error) {
+    res.status(500).json({error: error})
   }
 })
 
@@ -58,12 +64,16 @@ animes.get("/:animeId", async (req, res) => {
 
 animes.post("/", async (req, res) => {
   const { name, description } = req.body;
-  const incomingAnime = await createOneAnime(name, description)
-
-  if(incomingAnime){
-    res.status(201).json(incomingAnime)
-  } else {
-    res.status(400).json({error: "missing inputs"})
+  
+  try {
+    const incomingAnime = await createOneAnime(name, description)
+    if(incomingAnime){
+      res.status(201).json(incomingAnime)
+    } else {
+      res.status(400).json({error: "missing inputs"})
+    }
+  } catch (error) {
+    res.status(500).json({error: error})
   }
 })
 
@@ -79,11 +89,15 @@ animes.post("/", async (req, res) => {
 animes.put("/:animeId", checkName, checkDescription, async (req, res) => {
   const { animeId } = req.params;
   const update = req.body;
-  const updatedAnime = updateOneAnime(animeId, update);
-  if(updatedAnime){
-    res.status(200).json(updatedAnime)
-  } else {
-    res.status(404).json({error: "anime not found"})
+  try {
+    const updatedAnime = updateOneAnime(animeId, update);
+    if(updatedAnime){
+      res.status(200).json(updatedAnime)
+    } else {
+      res.status(404).json({error: "anime not found"})
+    }
+  } catch (error) {
+    res.status(500).json({error: error})
   }
 })
 
@@ -98,11 +112,15 @@ animes.put("/:animeId", checkName, checkDescription, async (req, res) => {
 
   animes.delete("/:animeId", async (req, res) => {
     const { animeId } = req.params;
-    const deletedAnime = await deleteOneAnime(animeId);
-    if(deletedAnime){
-      res.status(200).json(deletedAnime)
-    } else {
-      res.status(404).json({error: "anime not found"})
+    try{
+      const deletedAnime = await deleteOneAnime(animeId);
+      if(deletedAnime){
+        res.status(200).json(deletedAnime)
+      } else {
+        res.status(404).json({error: "anime not found"})
+      }
+    } catch (error) {
+      res.status(500).json({error: error})
     }
   })
 

@@ -11,7 +11,7 @@ let navigate = useNavigate();
 const [allAnimes, setAllAnimes] = useState([])
 
   useEffect(() => {
-    fetch("http://localhost:3000/animes")
+    fetch("http://localhost:3003/animes")
     .then(res => res.json())
     .then((resJson) => setAllAnimes(resJson))
     .catch((error) => console.error(error))

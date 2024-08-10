@@ -13,3 +13,4 @@ CREATE TABLE animes (
     name TEXT NOT NULL,
     description TEXT NOT NULL
 );
+

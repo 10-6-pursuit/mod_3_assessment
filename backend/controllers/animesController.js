@@ -8,6 +8,8 @@ const {
   deleteOneAnime,
 } = require("../queries/animes");
 
+const {checkName, checkDescription} = require("../Validations/checkControllers")
+
 /* Instructions: Use the following prompts to write the corresponding routes. **Each** route should be able to catch server-side and user input errors(should they apply). Consult the test files to see how the routes and errors should work.*/
 //Write a GET route that retrieves all animes from the database and sends them to the client with a 200 status code
 //your response body should look this(ignore the length of the array):
@@ -74,14 +76,14 @@ animes.post("/", async (req, res) => {
 //   "description": "this is anime as well"
 // }
 
-animes.put("/:animeId", async (req, res) => {
+animes.put("/:animeId", checkName, checkDescription, async (req, res) => {
   const { animeId } = req.params;
   const update = req.body;
   const updatedAnime = updateOneAnime(animeId, update);
   if(updatedAnime){
     res.status(200).json(updatedAnime)
   } else {
-    res.status(400).json({error: "anime not found"})
+    res.status(404).json({error: "anime not found"})
   }
 })
 

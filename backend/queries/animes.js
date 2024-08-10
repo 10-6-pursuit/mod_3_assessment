@@ -1,8 +1,12 @@
 const db = require("../db/dbConfig");
 
 const getAllAnimes = async () => {
-  const animes = await db.any("SELECT * FROM animes");
-  return animes;
+  try {
+    const animes = await db.any("SELECT * FROM animes");
+    return animes;
+  } catch (error) {
+    return error
+  }
 };
 
 const getOneAnime = async (animeId) => {

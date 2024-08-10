@@ -49,4 +49,76 @@ const {
 //   "name": "test1",
 //   "description": "this is anime as well"
 // }
+
+
+animes.get("/",  async (req, res) => {
+  try{
+    const allAnimes = await getAllAnimes();
+    if (allAnimes[0]) {
+      res.status(200).send(allAnimes);
+    }
+  } catch (error) {
+    res.status(500).json({error: "Server Down"})
+  }
+})
+
+
+animes.get("/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const findAnime = await getOneAnime(id);
+    if (findAnime) {
+      res.status(200).send(findAnime);
+    }
+  } catch (error) {
+    res.status(500).json({error: "Anime not found"})
+  }
+})
+
+animes.post("/", async (req, res) => {
+  const { name, description} = req.body;
+  if (!(name && description)) {
+    res.status(400).json({error: "Name and Description is Required"})
+  }
+  try{
+    const createdAnime = await createOneAnime(name, description);
+    res.status(201).send(createdAnime);
+  }catch (error) {
+    res.status(500).json({error: "Server Down"});
+  }
+})
+
+animes.put("/:id", async (req, res) => {
+  const { id } = req.params;
+  const { name, description } = req.body;
+  if (!(name && description)) {
+    res.status(400).json({error: "Name and Description is Required"})
+    return;
+  }
+  try {
+    const updateAnime = await updateOneAnime(id, req.body);
+    if (updateAnime) {
+      res.status(200).send(updateAnime);
+    } else {
+      res.status(404).json({error: "Anime doesn't exist"})
+    }
+  } catch (error) {
+    res.status(500).send(error)
+  }
+})
+
+animes.delete("/:animeId", async (req, res) => {
+  const { animeId } = req.params;
+  try {
+    const deleteAnime = await deleteOneAnime(animeId);
+    if (deleteAnime) {
+      res.status(200).send(deleteAnime);
+    } else {
+      res.status(404).json({error: "Anime doesn't Exist"})
+    }
+  } catch (error) {
+    res.status(500).json({error: "Database is Down"})
+  }
+})
+
 module.exports = animes;

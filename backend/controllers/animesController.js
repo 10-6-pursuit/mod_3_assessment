@@ -23,6 +23,14 @@ const {
 //       "description": "Naruto is a Japanese manga series written and illustrated by Masashi Kishimoto. It tells the story of Naruto Uzumaki, a young ninja who seeks recognition from his peers and dreams of becoming the Hokage, the leader of his village."
 //   }
 // ]
+animes.get("/", async (req, res) => {
+  const allAnimes = await getAllAnimes();
+  if (allAnimes[0]) {
+    res.status(200).json(allAnimes);
+  } else {
+    res.status(500).json({ error: "Mock server error"});
+  }
+});
 
 //Write a POST route that takes user provided data from the request body and creates a new anime in the database. The route should respond with a 201 status code and the new anime.
 //if the request body does not contain a name and description, or if the body's name or description have no length, respond with an error
@@ -32,6 +40,15 @@ const {
 //   "name": "test",
 //   "description": "this is anime"
 // }
+
+animes.post("/", async (req, res) => {
+  try {
+    const anime = await createOneAnime(req.body);
+    res.status(201).json(anime);
+  } catch (error) {
+    res.status(400).json({ error: error});
+  }
+});
 
 //Write a PUT route that takes user provided data from the request body and updates an existing anime in the database. The route should respond with a 200 and the updated anime. The route should be able to handle a non-existent anime id.
 //if the request body does not contain a name and description, or if the body's name or description have no length, respond with an error

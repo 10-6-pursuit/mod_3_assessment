@@ -1,16 +1,28 @@
 const db = require("../db/dbConfig");
 
 const getAllAnimes = async () => {
+try{
+  console.log(db)
   const animes = await db.any("SELECT * FROM animes");
   return animes;
+
+
+}catch{error=>
+  error
+
+
+}
+  
 };
 
 const getOneAnime = async (animeId) => {
+  
   const anime = await db.oneOrNone("SELECT * FROM animes WHERE id=$1", animeId);
   return anime;
 };
 
-const createOneAnime = async (name, description) => {
+const createOneAnime = async ({name, description}) => {
+  console.log(name)
   const newAnime = await db.one(
     "INSERT INTO animes (name, description) VALUES ($1, $2) RETURNING *",
     [name, description]
@@ -29,9 +41,9 @@ const updateOneAnime = async (id, body) => {
 
 const deleteOneAnime = async (id) => {
   const deletedAnime = await db.oneOrNone(
-    "DELETE FROM animes WHERE id=$1 RETURNING *",
-    id
+    "DELETE FROM animes WHERE id=$1 RETURNING *",id
   );
+ 
   return deletedAnime;
 };
 

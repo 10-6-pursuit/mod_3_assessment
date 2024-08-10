@@ -33,7 +33,7 @@ export default function NewAnime() {
         e.preventDefault()
 
         console.log(anime)
-        fetch(`${API}/animes/new`, {
+        fetch(`${API}/animes`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

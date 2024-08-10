@@ -13,8 +13,7 @@ module.exports = defineConfig({
       
       // implement node event listeners here
     },
-    baseUrl: "http://localhost:3000", // Adjust this to your app's base URL
-    specPattern: "cypress/e2e/**/*.cy.{js,jsx,ts,tsx}", // Pattern to locate your spec files
-    supportFile: "cypress/support/e2e.js", // Path to your support file
-  },
+    baseUrl: "http://localhost:3001",
+    specPattern: "cypress/e2e/**/*.cy.{js,jsx,ts,tsx}",
+    supportFile: "cypress/support/e2e.js",
 });

@@ -1,13 +1,30 @@
-import Anime from "./Anime";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import Anime from './Anime';
 
-function Animes() {
-  //fetch all animes from the backend and render them as a list using the Anime component. Make sure to style the animes to look like the screenshot from the README. Feel free to use axios to grab data
+const Animes = () => {
+  const [animes, setAnimes] = useState([]);
+
+  useEffect(() => {
+    const fetchAnimes = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/animes');
+        setAnimes(response.data);
+      } catch (error) {
+        console.error('Error fetching animes:', error);
+      }
+    };
+
+    fetchAnimes();
+  }, []);
 
   return (
-    <section className="index" id="anime-list">
-      <p>No animes to display</p>
-    </section>
+    <div className="anime-item">
+      {animes.map((anime) => (
+        <Anime key={anime.id} {...anime} />
+      ))}
+    </div>
   );
-}
+};
 
 export default Animes;

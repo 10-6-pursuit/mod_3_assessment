@@ -58,13 +58,46 @@ export default function NewAnime() {
             </label>
             <label>
                 Please enter the description of your anime:
-                {/* <input type='text'/> */}
+                <input type='text' name='name' value={anime.name} onChange={handleChange}/>
                 <textarea  value={anime.description} onChange={(event) => handleDesciptionChange(event)} />
             </label>
             <div className="form-button-container">
-                {/* <input type="submit" value={'Submit'} /> */}
+            <textarea name='description' value={anime.description} onChange={handleChange} />
                 <button type="submit" className="form-button">Submit</button>
             </div>
         </form>
     )
 }
+
+
+
+/*
+I need to make the following changes:
+
+
+.catch((error) => {
+    console.error('Error:', error);
+});
+
+
+if (!anime.name || !anime.description) {
+    alert("Please fill out both fields.");
+    return;
+}
+
+function handleChange(event) {
+    const { name, value } = event.target;
+    setAnime({
+        ...anime,
+        [name]: value,
+    });
+}
+
+<input type='text' name='name' value={anime.name} onChange={handleChange}/>
+<textarea name='description' value={anime.description} onChange={handleChange} />
+
+
+
+
+
+*/

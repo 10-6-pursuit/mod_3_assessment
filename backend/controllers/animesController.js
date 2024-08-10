@@ -1,5 +1,6 @@
 const express = require("express");
 const animes = express.Router();
+const { checkName } = require("../validations/checkAnime");
 const {
   getAllAnimes,
   getOneAnime,
@@ -24,10 +25,14 @@ const {
 //   }
 // ]
 animes.get("/", async (req, res) => {
-  const allAnimes = await getAllAnimes();
-  if (allAnimes[0]) {
-    res.status(200).json(allAnimes);
-  } else {
+  try {
+    const allAnimes = await getAllAnimes();
+    if (allAnimes[0]) {
+      res.status(200).json(allAnimes);
+    } else {
+      res.status(500).json({ error: "Mock server error"});
+    }
+  } catch {
     res.status(500).json({ error: "Mock server error"});
   }
 });
@@ -41,12 +46,12 @@ animes.get("/", async (req, res) => {
 //   "description": "this is anime"
 // }
 
-animes.post("/", async (req, res) => {
+animes.post("/", checkName, async (req, res) => {
   try {
-    const anime = await createOneAnime(req.body);
+    const anime = await createOneAnime(req.body.name, req.body.description);
     res.status(201).json(anime);
   } catch (error) {
-    res.status(400).json({ error: error});
+    res.status(500).json({ error: "Mock server error"});
   }
 });
 
@@ -59,6 +64,20 @@ animes.post("/", async (req, res) => {
 //   "description": "this is anime as well"
 // }
 
+animes.put("/:id", checkName, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const updateAnime = await updateOneAnime(id, req.body);
+    if (updateAnime) {
+      res.status(200).json(updateAnime);
+    } else {
+      res.status(404).json({ error: "Anime does not exist" });
+    }
+  } catch {
+    res.status(500).json({ error: "Mock server error" });
+  }
+})
+
 //Write a DELETE route that deletes a single anime by id (provided by the client as a request param) from the database and responds with a 200 and the deleted anime data. The route should be able to handle a non-existent anime id.
 //your response body should look this:
 // {
@@ -66,4 +85,19 @@ animes.post("/", async (req, res) => {
 //   "name": "test1",
 //   "description": "this is anime as well"
 // }
+
+animes.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const deletedAnime = await deleteOneAnime(id);
+    if (deletedAnime) {
+      res.status(200).json(deletedAnime);
+    } else {
+      res.status(404).json({ error: "Anime does not exist" });
+    }
+  } catch {
+    res.status(500).json({ error: "Mock server error" });
+  }
+});
+
 module.exports = animes;

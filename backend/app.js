@@ -21,12 +21,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // ROUTES
-app.get("/", async (_, res) => {
+app.get("/", async (req, res) => {
   res.send("In Pursuit of Accelerator 2");
 });
 app.use("/animes", animesController);
 
-app.get("*", (_, res) => {
+app.get("*", (req, res) => {
   res.status(404).send("The route you are looking for doesn't exist!");
 });
 

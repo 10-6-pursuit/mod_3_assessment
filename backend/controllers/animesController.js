@@ -25,11 +25,21 @@ const {
 // ]
 
 animes.get("/", async (req, res) => {
-  const allAnimes = await getAllAnimes()
-  if(allAnimes[0]) {
+  try {
+    const allAnimes = await getAllAnimes()
     res.status(200).send(allAnimes)
+  } catch {
+    res.status(500).send("error")
+  }
+})
+
+animes.get("/:id", async (req, res) => {
+  const { id } = req.params;
+  const currentAnime = await getOneAnime(id)
+  if (currentAnime) {
+    res.status(200).send(currentAnime)
   } else {
-    res.status(500).send(error)
+    res.status(404).send("error")
   }
 })
 
@@ -43,12 +53,15 @@ animes.get("/", async (req, res) => {
 // }
 
 animes.post("/", async (req, res) => {
-  const { name, description } = req.body
-  const newAnime = await createOneAnime( name, description )
-  if (newAnime) {
+  try {
+    const { name, description } = req.body
+    if (!name || !description) {
+      res.status(400).send("error")
+    }
+    const newAnime = await createOneAnime( name, description )
     res.status(201).send(newAnime)
-  } else {
-    res.status(404).send(error)
+  } catch {
+    res.status(500).send("error")
   }
 })
 
@@ -63,11 +76,20 @@ animes.post("/", async (req, res) => {
 
 animes.put("/:id", async (req, res) => {
   const { id } = req.params
-  try {
-    const updatedAnime = await updateOneAnime(id, req.body)
-    res.status(200).send(updatedAnime)
-  } catch (error) {
-    res.status(404).send(error)
+  const currentAnime = await getOneAnime(id)
+  if (currentAnime) {
+    try {
+      const { name, description } = req.body
+      if (!name || !description) {
+        res.status(400).send("Anime not found")
+      }
+      const updatedAnime = await updateOneAnime(id, req.body)
+      res.status(200).send(updatedAnime)
+    } catch {
+      res.status(500).send("Anime not found")
+    }
+  } else {
+    res.status(404).send("Anime not found")
   }
 })
 
@@ -81,11 +103,16 @@ animes.put("/:id", async (req, res) => {
 
 animes.delete("/:id", async (req, res) => {
   const { id } = req.params
-  const deletedAnime = await deleteOneAnime(id)
-  if (deletedAnime) {
-    res.status(200).send(deletedAnime)
+  const currentAnime = await getOneAnime(id)
+  if (currentAnime) {
+    try {
+      const deletedAnime = await deleteOneAnime(id)
+      res.status(200).send(deletedAnime)
+    } catch {
+      res.status(500).send("Anime not found")
+    }
   } else {
-    res.status(404).send("no anime found")
+    res.status(404).send("Anime not found")
   }
 })
 

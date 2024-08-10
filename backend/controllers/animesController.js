@@ -27,21 +27,29 @@ const {
 // ]
 
 animes.get("/", async (req, res) => {
-  const allAnimes = await getAllAnimes();
-  if (allAnimes.length) {
-    res.status(200).json(allAnimes);
-  } else {
+  try {
+    const allAnimes = await getAllAnimes();
+    if (allAnimes.length) {
+      res.status(200).json(allAnimes);
+    } else {
+      res.status(404).json({ error: "Error fetching all animes" });
+    }
+  } catch (err) {
     res.status(500).json({ error: "Error fetching all animes" });
   }
 });
 
 animes.get("/:id", async (req, res) => {
   const { id } = req.params;
-  const anime = await getOneAnime(id);
-  if (anime.id) {
-    res.status(200).json(anime);
-  } else {
-    res.status(404).json({ error: `Anime with id ${id} not found` });
+  try {
+    const anime = await getOneAnime(id);
+    if (anime.id) {
+      res.status(200).json(anime);
+    } else {
+      res.status(404).json({ error: `Anime with id ${id} not found` });
+    }
+  } catch (err) {
+    res.status(500).json({ error: "Failed to search for anime" });
   }
 });
 
@@ -56,11 +64,17 @@ animes.get("/:id", async (req, res) => {
 
 animes.post("/", async (req, res) => {
   const { name, description } = req.body;
-  if (!name || !description) {
-    res.status(400).json({ error: `Name and/or description was not provided` });
-  } else {
-    const newAnime = await createOneAnime(name, description);
-    res.status(201).json(newAnime);
+  try {
+    if (!name || !description) {
+      res
+        .status(400)
+        .json({ error: `Name and/or description was not provided` });
+    } else {
+      const newAnime = await createOneAnime(name, description);
+      res.status(201).json(newAnime);
+    }
+  } catch (err) {
+    res.status(500).json({ error: "error creating new anime" });
   }
 });
 
@@ -75,9 +89,17 @@ animes.post("/", async (req, res) => {
 
 animes.put("/:id", async (req, res) => {
   const { id } = req.params;
+  const { name, description } = req.body;
   try {
-    const updatedAnime = await updateOneAnime(id, req.body);
-    res.status(200).json(updatedAnime);
+    if (!name || !description) {
+      res.status(400).json({ error: "Name and/or description not provided" });
+    } else {
+      const updatedAnime = await updateOneAnime(id, req.body);
+      if (!updatedAnime) {
+        res.status(404).json({ error: "Failed to find anime" });
+      }
+      res.status(200).json(updatedAnime);
+    }
   } catch (error) {
     res.status(500).json({ error: "Failed to update anime" });
   }
@@ -93,11 +115,17 @@ animes.put("/:id", async (req, res) => {
 
 animes.delete("/:id", async (req, res) => {
   const { id } = req.params;
-  const deletedAnime = await deleteOneAnime(id);
-  if (deletedAnime.id) {
-    res.status(200).json(deletedAnime);
-  } else {
-    res.status(404).json("Anime not found");
+  try {
+    const deletedAnime = await deleteOneAnime(id);
+    if (deletedAnime) {
+      res.status(200).json(deletedAnime);
+    } else {
+      res.status(404).json("Anime not found");
+    }
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: "An error occurred while deleting the anime." });
   }
 });
 

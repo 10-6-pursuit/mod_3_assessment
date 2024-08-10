@@ -50,5 +50,9 @@ body {
   flex-direction: row;
 }
 
+.anime-item {
+  background-color: #f8f4ec;
+  color: black;
+}
 
 

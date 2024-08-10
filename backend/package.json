@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "start": "nodemon server.js",
+    "start": "nodemon -r dotenv/config server.js",
     "seed": "psql -U postgres -f db/seed.sql",
     "schema": "psql -U postgres -f db/schema.sql",
     "setup": "psql -U postgres -f db/schema.sql -f db/seed.sql"

@@ -68,3 +68,31 @@ export default function NewAnime() {
         </form>
     )
 }
+
+
+/*
+
+.catch((error) => {
+    console.error('Error:', error);
+});
+
+
+if (!anime.name || !anime.description) {
+    alert("Please fill out both fields.");
+    return;
+}
+
+function handleChange(event) {
+    const { name, value } = event.target;
+    setAnime({
+        ...anime,
+        [name]: value,
+    });
+}
+
+<input type='text' name='name' value={anime.name} onChange={handleChange}/>
+<textarea name='description' value={anime.description} onChange={handleChange} />
+
+
+
+*/

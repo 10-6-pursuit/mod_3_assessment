@@ -1,28 +1,28 @@
-import { useState } from 'react'
-
-
+import { useState } from 'react';
 
 export default function CollectName({ updateName }) {
-
-    const [name, setName] = useState("")
+    const [name, setName] = useState("");
 
     function handleSubmit(event) {
-        event.preventDefault()
-        // console.log(name)
-        updateName(name)
+        event.preventDefault();
+        updateName(name);
     }
 
-    // console.log(name)
     return (
         <form onSubmit={handleSubmit}>
             <label>
                 Please enter your name below:
-                <input type='text' value={name} onChange={(event) => setName(event.target.value)} />
+                <input
+                    type='text'
+                    value={name}
+                    onChange={(event) => setName(event.target.value)}
+                />
             </label>
-            {/* <input type='submit' onSubmit={(event) => handleSubmit(event)}/> */}
+            <button type="submit">Submit</button>
         </form>
-    )
+    );
 }
+
 
 
 // const count = 0

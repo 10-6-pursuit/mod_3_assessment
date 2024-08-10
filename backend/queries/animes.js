@@ -24,6 +24,7 @@ const updateOneAnime = async (id, body) => {
     "UPDATE animes SET name=$1, description=$2 WHERE id=$3 RETURNING *",
     [name, description, id]
   );
+
   return updatedAnime;
 };
 

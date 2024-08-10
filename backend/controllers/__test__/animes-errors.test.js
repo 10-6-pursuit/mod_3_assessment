@@ -12,6 +12,8 @@ jest.mock("../../queries/animes.js", () => {
   }
   return { ...actualModule };
 });
+
+
 describe("/animes errors", () => {
   it("GET /animes should throw a 500 if the database is down", async () => {
     const response = await supertest(app).get("/animes");
@@ -58,7 +60,7 @@ describe("user errors for /animes", () => {
   });
   it("DELETE /animes/:animeId should throw a 404 error if the anime the user is trying to delete does not exist", async () => {
     const res = await supertest(app).delete("/animes/100000");
-    console.log(res);
+    // console.log(res);
     expect(res.statusCode).toBe(404);
   });
 });

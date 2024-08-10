@@ -1,4 +1,11 @@
 const express = require("express");
+const db = require("../db/dbConfig");
+const {
+  checkCreate,
+  checkUpdate,
+  checkExistence,
+} = require("../validations/checkdb.js");
+
 const animes = express.Router();
 const {
   getAllAnimes,
@@ -8,6 +15,80 @@ const {
   deleteOneAnime,
 } = require("../queries/animes");
 
+animes.get("/", async (req, res) => {
+  try {
+    const allAnimes = await getAllAnimes();
+    if (allAnimes[0]) {
+      res.status(200).json(allAnimes);
+    }
+  } catch (error) {
+    {
+      res.status(500).json({ error: "server is down" });
+    }
+  }
+});
+animes.get("/:animeId", async (req, res) => {
+  let id = req.params.animeId;
+  try {
+    const oneAnime = await getOneAnime(id);
+
+    if (oneAnime) {
+      res.status(200).json(oneAnime);
+    }
+  } catch (error) {
+    {
+      res.status(500).json({ error: "server is down" });
+    }
+  }
+});
+
+animes.post("/", checkCreate, async (req, res) => {
+  try {
+    const createAnime = await createOneAnime(req.body);
+
+    if (createAnime) {
+      res.status(201).json(createAnime);
+    }
+  } catch (error) {
+    {
+      res.status(500).json({ error: "server is down" });
+    }
+  }
+});
+
+animes.delete("/:animeId", async (req, res) => {
+  let id = req.params.animeId;
+
+  try {
+    const destroyedAnime = await deleteOneAnime(id);
+    if (destroyedAnime) {
+      res.status(200).json(destroyedAnime);
+    } else {
+      res.status(404).json({ error: "error" });
+    }
+  } catch (error) {
+    {
+      res.status(500).json({ error: "server is down" });
+    }
+  }
+});
+animes.put("/:animeId", checkUpdate, async (req, res) => {
+  let animeId = req.params.animeId;
+
+  try {
+    const updatedAnime = await updateOneAnime(animeId, req.body);
+
+    if (updatedAnime) {
+      res.status(200).json(updatedAnime);
+    } else {
+      res.status(404).json({ error: "error" });
+    }
+  } catch (error) {
+    {
+      res.status(500).json({ error: "server is down" });
+    }
+  }
+});
 /* Instructions: Use the following prompts to write the corresponding routes. **Each** route should be able to catch server-side and user input errors(should they apply). Consult the test files to see how the routes and errors should work.*/
 //Write a GET route that retrieves all animes from the database and sends them to the client with a 200 status code
 //your response body should look this(ignore the length of the array):

@@ -15,11 +15,15 @@ const getOneAnime = async (animeId) => {
 };
 
 const createOneAnime = async (name, description) => {
-  const newAnime = await db.one(
-    "INSERT INTO animes (name, description) VALUES ($1, $2) RETURNING *",
-    [name, description]
-  );
-  return newAnime;
+  try {
+    const newAnime = await db.one(
+      "INSERT INTO animes (name, description) VALUES ($1, $2) RETURNING *",
+      [name, description]
+    );
+    return newAnime;
+  } catch (error) {
+    return error
+  }
 };
 
 const updateOneAnime = async (id, body) => {

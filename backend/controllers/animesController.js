@@ -8,6 +8,11 @@ const {
   deleteOneAnime,
 } = require("../queries/animes");
 
+const {
+  checkName,
+  checkDescription,
+} = require("../validations/animeValidations.js");
+
 /* Instructions: Use the following prompts to write the corresponding routes. **Each** route should be able to catch server-side and user input errors(should they apply). Consult the test files to see how the routes and errors should work.*/
 //Write a GET route that retrieves all animes from the database and sends them to the client with a 200 status code
 //your response body should look this(ignore the length of the array):
@@ -23,16 +28,6 @@ const {
 //       "description": "Naruto is a Japanese manga series written and illustrated by Masashi Kishimoto. It tells the story of Naruto Uzumaki, a young ninja who seeks recognition from his peers and dreams of becoming the Hokage, the leader of his village."
 //   }
 // ]
-
-//allAnimes
-// animes.get("/", async (req, res) => {
-//   const allAnimes = await getAllAnimes();
-//   if (allAnimes[0]) {
-//     res.status(200).json(allAnimes);
-//   } else {
-//     res.status(500).json({ error: "Server error" });
-//   }
-// });
 
 animes.get("/", async (req, res) => {
   try {
@@ -96,34 +91,30 @@ animes.post("/", async (req, res) => {
 //   const { id } = req.params;
 //   try {
 //     const updateAnime = await updateOneAnime(id, req.body);
-//     if (updateAnime) {
-//       res.status(200).json(updateAnime);
+//     // res.status(200).json(updateAnime);
+//     if (animes.id) {
+//       res.status(404).json({ error: `ID: ${id} does not exist` });
 //     } else if (
 //       req.body.name.length === 0 &&
 //       req.body.description.length === 0
 //     ) {
-//       res.status(400).json("Name and descripion cannot be empty");
-//     } else {
-//       res.status(404).json({ error: `Cannot update, no ID: ${id} found` });
+//       res.status(400).json({ eror: "Name and Description cannot be empty" });
+//     } else if (updateAnime) {
+//       res.status(200).json(updateAnime);
 //     }
 //   } catch (error) {
 //     res.status(500).json({ error });
 //   }
 // });
 
-animes.put("/:id", async (req, res) => {
+animes.put("/:id", checkName, checkDescription, async (req, res) => {
   const { id } = req.params;
   try {
     const updateAnime = await updateOneAnime(id, req.body);
     // res.status(200).json(updateAnime);
-    if (!animes.includes(id)) {
-      res.status(404).send({ error: `ID: ${id} does not exist` });
-    } else if (
-      req.body.name.length === 0 &&
-      req.body.description.length === 0
-    ) {
-      res.status(400).send({ eror: "Name and Description cannot be empty" });
-    } else if (updateAnime) {
+    if (!updateAnime) {
+      res.status(404).json({ error: `ID: ${id} does not exist` });
+    } else {
       res.status(200).json(updateAnime);
     }
   } catch (error) {

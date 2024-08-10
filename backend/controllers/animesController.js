@@ -24,6 +24,16 @@ const {
 //   }
 // ]
 
+animes.get("/", async (req, res) => {
+  const allAnimes = await getAllAnimes();
+
+  if(allAnimes){
+    res.status(200).json(allAnimes)
+  } else {
+    res.status(404).json({error: "not found"})
+  }
+})
+
 //Write a POST route that takes user provided data from the request body and creates a new anime in the database. The route should respond with a 201 status code and the new anime.
 //if the request body does not contain a name and description, or if the body's name or description have no length, respond with an error
 //your response body should look this:
@@ -32,6 +42,17 @@ const {
 //   "name": "test",
 //   "description": "this is anime"
 // }
+
+animes.post("/", async (req, res) => {
+  const {name, description} = req.body;
+  const incomingAnime = await createOneAnime(name, description)
+
+  if(incomingAnime){
+    res.status(201).json(incomingAnime)
+  } else {
+    res.status(400).json({error: "missing inputs"})
+  }
+})
 
 //Write a PUT route that takes user provided data from the request body and updates an existing anime in the database. The route should respond with a 200 and the updated anime. The route should be able to handle a non-existent anime id.
 //if the request body does not contain a name and description, or if the body's name or description have no length, respond with an error
